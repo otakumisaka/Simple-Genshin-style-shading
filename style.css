@@ -1,0 +1,18 @@
+/* 放大 dat.GUI 的字体大小 */
+.dg .cr {
+    font-size: 32px; /* 调整为你需要的字体大小 */
+  }
+  
+  .dg .c {
+    font-size: 32px; /* 调整为你需要的字体大小 */
+  }
+
+/* 放大 dat.GUI 的字体大小 */
+.dg .slider {
+    height: 20px;
+}
+
+.dg .slider-fg {
+    height: 20px;
+}
+
