@@ -175,7 +175,7 @@ function createCustomMaterial(
       },
       displayType: {
         value: 3, // overall effect
-      }
+      },
     },
     vertexShader: vs,
     fragmentShader: fs,
@@ -426,7 +426,6 @@ loadModel(
   ganyuTransform
 );
 
-
 // hutao scene
 // loadModel(
 //   hutaoModelInfo,
@@ -460,7 +459,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 
 // observation coordinate
 const axesHelper = new THREE.AxesHelper(150);
-scene.add(axesHelper);
+// scene.add(axesHelper);
 
 // test coordinate
 // const boxGeo = new THREE.BoxGeometry(40, 40, 20);
@@ -618,30 +617,49 @@ outlineFolder
 outlineFolder.open();
 
 // add a folder to select different render effect
-// Possible selections include 
+// Possible selections include
 // (a).albedo (b).diffuse (c).specular (d).overall  (e).rimLight (f). specular + rimLight
 const effectFolder = gui.addFolder("Effect");
 const effectParams = {
   effect: "Overall",
 };
 effectFolder
-.add(effectParams, "effect", ["Albedo", "Diffuse", "Specular", "Overall", "RimLight", "Specular + RimLight"])
-.name("Effect")
-.onChange((value) => {
-  if (value === "Albedo") {
-    updateMaterial(scene, "displayType", 0);
-  } else if (value === "Diffuse") {
-    updateMaterial(scene, "displayType", 1);
-  } else if (value === "Specular") {
-    updateMaterial(scene, "displayType", 2);
-  } else if (value === "Overall") {
-    updateMaterial(scene, "displayType", 3);
-  } else if (value === "RimLight") {
-    updateMaterial(scene, "displayType", 4);
-  } else if (value === "Specular + RimLight") {
-    updateMaterial(scene, "displayType", 5);
-  }
-});
+  .add(effectParams, "effect", [
+    "Albedo",
+    "Diffuse",
+    "Specular",
+    "Overall",
+    "RimLight",
+    "Specular + RimLight",
+    "LightMapR",
+    "LightMapG",
+    "LightMapB",
+    "LightMapA",
+  ])
+  .name("Effect")
+  .onChange((value) => {
+    if (value === "Albedo") {
+      updateMaterial(scene, "displayType", 0);
+    } else if (value === "Diffuse") {
+      updateMaterial(scene, "displayType", 1);
+    } else if (value === "Specular") {
+      updateMaterial(scene, "displayType", 2);
+    } else if (value === "Overall") {
+      updateMaterial(scene, "displayType", 3);
+    } else if (value === "RimLight") {
+      updateMaterial(scene, "displayType", 4);
+    } else if (value === "Specular + RimLight") {
+      updateMaterial(scene, "displayType", 5);
+    } else if (value === "LightMapR") {
+      updateMaterial(scene, "displayType", 6);
+    } else if (value === "LightMapG") {
+      updateMaterial(scene, "displayType", 7);
+    } else if (value === "LightMapB") {
+      updateMaterial(scene, "displayType", 8);
+    } else if (value === "LightMapA") {
+      updateMaterial(scene, "displayType", 9);
+    }
+  });
 
 // 渲染循环
 function animate() {

@@ -175,6 +175,10 @@ let fragmentShader = `
     #define overallEffect 0x3
     #define rimLightEffect 0x4
     #define specularRimEffect 0x5
+    #define lightMapR 0x6
+    #define lightMapG 0x7
+    #define lightMapB 0x8
+    #define lightMapA 0x9
 
     float LinearEyeDepth(float depth) 
     { 
@@ -460,6 +464,18 @@ let fragmentShader = `
                 break;
             case specularRimEffect:
                 finalColor = finalSpecularColor + finalRimColor;
+                break;
+            case lightMapR:
+                finalColor = vec3(lightMapColor.r);
+                break;
+            case lightMapG:
+                finalColor = vec3(lightMapColor.g);
+                break;
+            case lightMapB:
+                finalColor = vec3(lightMapColor.b);
+                break;
+            case lightMapA:
+                finalColor = vec3(lightMapColor.a);
                 break;
             default:
                 break;
