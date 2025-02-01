@@ -46,11 +46,17 @@ renderer.autoClear = false;
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+// for image download
+window.renderer = renderer;
+window.scene = scene;
+window.camera = camera;
+
 // postEffecting-bloom
 // 创建 Effect Composer
 const composer = new EffectComposer(renderer);
 const renderScenePass = new RenderPass(scene, camera);
 composer.addPass(renderScenePass);
+window.composer = composer;
 
 // outline Pass
 const outlinePass = new OutlinePass(
@@ -77,6 +83,7 @@ const bloomPass = new UnrealBloomPass(
   0.95 // threshold
 );
 composer.addPass(bloomPass);
+bloomPass.renderToScreen = true;
 
 // background color
 renderer.setClearColor(0x444444, 1);
@@ -86,7 +93,7 @@ const sunLightType = 0x1;
 const pointLightType = 0x2;
 const lightType = sunLightType;
 var pointLight = new THREE.PointLight(0xffffff, 1.0);
-pointLight.position.set(5, 10, -12);
+pointLight.position.set(5, 20, -12);
 pointLight.castShadow = true;
 scene.add(pointLight);
 const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
@@ -115,6 +122,7 @@ const renderTarget = new THREE.WebGLRenderTarget(
     format: THREE.RGBAFormat,
     type: THREE.UnsignedByteType,
     depthBuffer: true,
+    preserveDrawingBuffer:true,
   }
 );
 

@@ -360,7 +360,7 @@ let fragmentShader = `
             // halfLambert = pow(halfLambert, 2.0);
             float _rampShadowRange = 0.8;
             float shadowAO = smoothstep(-0.1, 0.2, lightMapColor.g);
-            float shadowAO2 = smoothstep(0.1, lightMapColor.g, 0.7);
+            float shadowAO2 = step(0.1, lightMapColor.g);
             // rampU sampling
             // Ramp Texture is 256 x 20
             // Warm Light is 256 x 10, and Cold Light is 256 x 10
@@ -371,30 +371,46 @@ let fragmentShader = `
             float rampV = 0.0;
             
             rampU = clamp(halfLambert * shadowAO2, rampPixelU, 1.0 - rampPixelU);
+
+            // Hair Bands control
+            const float HAIR_BAND_COUNT = 5.0;      
+            const float HAIR_BAND_THICKNESS = 0.001;
+            float bandIndex = floor(halfLambert * shadowAO2 * HAIR_BAND_COUNT); 
+            float transition = smoothstep(
+                0.0, 
+                HAIR_BAND_THICKNESS, 
+                fract(bandIndex)
+            );
+            bandIndex += transition;
+
             if(isHair)
             {
                 float thresholdRampV = step(0.5, lightMapColor.a);
-                rampV = rampPixelV * (33.0 - 2. * mix(1.0, 3.0, thresholdRampV));
-                if(isNight)
-                {
-                    rampV = rampPixelV * (17.0 - 2. * mix(1.0, 3.0, thresholdRampV));
-                }
+                rampV = rampPixelV * (33.0 - 2.0 * mix(1.0, 3.0, step(0.5, lightMapColor.a)) * bandIndex); 
+
             }
             else // body
             {
                 rampV = rampPixelV * (33.0 - 2. * (lightMapColor.a * 4.0 + 1.0));
-                // float rampV = rampPixelV * mix(0.0, 10.0, smoothstep(0.0, 1.0, lightMapColor.a));
-                if(isNight)
-                {
-                    rampV  = rampPixelV * (17.0 - 2. * (lightMapColor.a * 4.0 + 1.0));
-                }
             }
-
+            if(isNight)
+            {
+                rampV += 0.5; 
+            }
             vec2 rampUV = vec2(rampU, rampV);
-            vec3 rampShadowColor = vec3(1.0, 1.0, 1.0);
-            // get ramp color
             vec3 rampColor = texture2D(_RampTex, rampUV).xyz;
-            rampColor = mix( rampColor * baseColor * rampShadowColor, baseColor , step(_rampShadowRange, halfLambert * shadowAO2));
+
+            vec3 rampShadowColor = vec3(1.0);
+            float rampshadowMask = 0.0;
+            float lightAttenuation = clamp(halfLambert * shadowAO2, 0.0, 1.0);
+            float _hairGradientWidth = 0.1;
+            rampshadowMask = smoothstep(
+            _rampShadowRange - _hairGradientWidth, 
+            _rampShadowRange + _hairGradientWidth,
+             lightAttenuation);
+
+            rampColor = mix(rampColor * rampShadowColor * baseColor, baseColor, rampshadowMask);
+        
             diffuseColor = rampColor;
 
 
